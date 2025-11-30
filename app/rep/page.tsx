@@ -1,45 +1,49 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Wifi, CheckCircle, AlertCircle, Radio } from 'lucide-react';
+import { Wifi, CheckCircle, AlertCircle } from 'lucide-react';
 
 export default function SyncAttendance() {
   const [indexNumber, setIndexNumber] = useState('');
-  const [name, setName] = useState('');
   const [isConnecting, setIsConnecting] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<'idle' | 'connecting' | 'success' | 'error'>('idle');
+  const [password, setPassword] = useState('')
+  const [attendanceStatus, setAttendanceStatus] = useState(false)
 
   const handleConnect = async () => {
-    if (!indexNumber || !name) {
+    console.log(indexNumber, password)
+    if (!indexNumber || !password ) {
       setConnectionStatus('error');
-      setTimeout(() => setConnectionStatus('idle'), 3000);
       return;
     }
 
-    setIsConnecting(true);
-    setConnectionStatus('connecting');
+    console.log('Connecting with', {indexNumber, password})
 
-    // Simulate WiFi verification and attendance registration
-    // Replace this with your actual API call
     try {
-      // API call:
-      const response = await fetch('/api/attendance', {
+      const response = await fetch('/api/rep', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ indexNumber, name}),
+        body: JSON.stringify({ indexNumber, password}),
       });
       const data = await response.json();
-      setIsConnecting(false);
-      const { attendanceRegisteration } = data;
 
-      setConnectionStatus(attendanceRegisteration);
+      if (data.attendanceStatus === true) {
+        setAttendanceStatus(true)
+      } else {
+        setAttendanceStatus(false)
+      }
 
+
+      
     } catch (error) {
       setConnectionStatus('error');
       setIsConnecting(false);
-      setTimeout(() => setConnectionStatus('idle'), 3000);
+    } finally {
+      setIsConnecting(false);
     }
   };
+
+
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
@@ -68,10 +72,6 @@ export default function SyncAttendance() {
                   <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center">
                     <AlertCircle className="w-12 h-12 text-red-600" strokeWidth={2} />
                   </div>
-                ): connectionStatus === 'closed' ? (
-                  <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center">
-                    <AlertCircle className="w-12 h-12 text-red-600" strokeWidth={2} />
-                  </div>
                 ) : (
                   <div className={`w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center ${
                     isConnecting ? 'animate-pulse' : ''
@@ -80,19 +80,11 @@ export default function SyncAttendance() {
                   </div>
                 )}
               </div>
-
-              {/* Status Text */}
               <div className="text-center">
                 {connectionStatus === 'success' && (
                   <>
                     <h3 className="text-xl font-semibold text-gray-900 mb-1">Registration Successful</h3>
                     <p className="text-gray-600">Your attendance has been recorded</p>
-                  </>
-                )}
-                {connectionStatus === 'closed' && (
-                  <>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-1">Registration Failed</h3>
-                    <p className="text-red-600">Attendance is closed</p>
                   </>
                 )}
                 {connectionStatus === 'error' && (
@@ -116,6 +108,7 @@ export default function SyncAttendance() {
               </div>
             </div>
           </div>
+           
 
           {/* Form Section */}
           <div className="p-8">
@@ -137,16 +130,16 @@ export default function SyncAttendance() {
 
               <div>
                 <label htmlFor="fullName" className="block text-sm font-semibold text-gray-900 mb-2">
-                  Full Name <span className="text-red-500">*</span>
+                  Password <span className="text-red-500">*</span>
                 </label>
                 <input
-                  id="fullName"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   disabled={isConnecting || connectionStatus === 'success'}
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all disabled:bg-gray-50 disabled:cursor-not-allowed disabled:text-gray-500"
-                  placeholder="Enter your full name"
+                  placeholder="Enter your password"
                 />
               </div>
             </div>
@@ -155,14 +148,14 @@ export default function SyncAttendance() {
               onClick={handleConnect}
               disabled={isConnecting || connectionStatus === 'success'}
               className={`w-full py-3.5 px-6 rounded-lg font-semibold text-base transition-all duration-200 ${
-                isConnecting || connectionStatus === 'success'
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                attendanceStatus
+                  ? 'bg-red-600 text-white hover:bg-red-700 active:bg-red-800'
                   : 'bg-emerald-600 text-white hover:bg-emerald-700 active:bg-emerald-800'
               }`}
             >
-              {isConnecting ? 'Connecting...' : 
-               connectionStatus === 'success' ? 'Connected' : 
-               'Register Attendance'}
+              {isConnecting ? 'loading...' : 
+               attendanceStatus ? 'Close Attendance' : 
+               'Open Attendance'}
             </button>
           </div>
 
