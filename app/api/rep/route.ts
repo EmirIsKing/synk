@@ -13,7 +13,9 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
         }
 
-        const ip = req.headers.get('x-forwarded-for') || req.ip || 'unknown'
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const ip = req.headers.get('x-forwarded-for') || 'unknown'
 
 
                       /// to Insert a new rep into database ///
