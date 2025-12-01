@@ -30,7 +30,7 @@ export default async function connectDB(): Promise<mongoose.Mongoose> {
 
   if (!cached.promise) {
     cached.promise = mongoose
-      .connect(MONGODB_URI)
+      .connect(MONGODB_URI!)
       .then((m) => m);
   }
 
