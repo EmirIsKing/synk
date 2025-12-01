@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Wifi, CheckCircle, AlertCircle, Radio } from 'lucide-react';
+import { useState } from 'react';
+import { Wifi, CheckCircle, AlertCircle } from 'lucide-react';
 
 export default function SyncAttendance() {
   const [indexNumber, setIndexNumber] = useState('');
@@ -35,6 +35,7 @@ export default function SyncAttendance() {
       setConnectionStatus(attendanceRegisteration);
 
     } catch (error) {
+      console.error('Connection error:', error);
       setConnectionStatus('error');
       setIsConnecting(false);
       setTimeout(() => setConnectionStatus('idle'), 3000);

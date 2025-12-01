@@ -36,6 +36,7 @@ export default function SyncAttendance() {
 
       
     } catch (error) {
+      console.error('Connection error:', error);
       setConnectionStatus('error');
       setIsConnecting(false);
     } finally {
