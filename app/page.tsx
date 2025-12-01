@@ -7,7 +7,7 @@ export default function SyncAttendance() {
   const [indexNumber, setIndexNumber] = useState('');
   const [name, setName] = useState('');
   const [isConnecting, setIsConnecting] = useState(false);
-  const [connectionStatus, setConnectionStatus] = useState<'idle' | 'connecting' | 'success' | 'error'>('idle');
+  const [connectionStatus, setConnectionStatus] = useState<'idle' | 'connecting' | 'success' | 'error' | 'closed'>('idle');
 
   const handleConnect = async () => {
     if (!indexNumber || !name) {

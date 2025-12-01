@@ -14,7 +14,6 @@ export async function POST(req: Request) {
         }
 
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const ip = req.headers.get('x-forwarded-for') || 'unknown'
 
 
