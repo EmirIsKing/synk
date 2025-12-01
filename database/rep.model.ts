@@ -29,4 +29,4 @@ const RepModel: Model<RepDocument> =
   (mongoose.models.Rep as Model<RepDocument>) || mongoose.model<RepDocument>('Rep', repSchema);
 
 export default RepModel;
-export type { RepDocument };
+//export type { RepDocument };
