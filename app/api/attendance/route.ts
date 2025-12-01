@@ -13,7 +13,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
         }
 
-        const ip = req.headers.get('x-forwarded-for') || req.ip || 'unknown'
+        const ip = req.headers.get('x-forwarded-for') || 'unknown'
         const rep = await RepModel.findOne({ ipAddress: ip})
 
         if (!rep) {
